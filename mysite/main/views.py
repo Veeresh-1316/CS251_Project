@@ -1,6 +1,6 @@
 from django.shortcuts import  render, redirect
 from .forms import NewUserForm
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.core.mail import send_mail, BadHeaderError, EmailMessage
@@ -15,6 +15,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 
+User = get_user_model()
+
 def homepage(request):
 	return render(request=request, template_name='main/home.html')
 
@@ -23,9 +25,8 @@ def register_request(request):
 		form = NewUserForm(request.POST)
 		if form.is_valid():
 			user = form.save()
-			login(request, user)
 			messages.success(request, "Registration successful." )
-			return redirect("main:homepage")
+			return redirect("main:login")
 		messages.error(request, "Unsuccessful registration. Invalid information.")
 	form = NewUserForm()
 	return render (request=request, template_name="main/register.html", context={"register_form":form})
