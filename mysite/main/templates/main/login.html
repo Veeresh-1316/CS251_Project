@@ -1,19 +1,35 @@
 {% extends "main/header.html" %}
 
+{% block css_link %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock css_link %}
+
+
 {% block content %}      
 
 {% load crispy_forms_tags %}
 
+
 <!--Login--> 
-<div class="container py-5">
+<div class="container-fluid login_container py-5">
+  
   <h1>Login</h1>
-  <form method="POST">
-    {% csrf_token %}
-    {{ login_form|crispy }}
-    <button class="btn btn-primary" type="submit">Login</button>
-  </form>
-  <p class="text-center">Don't have an account? <a href="/register">Create an account</a>.</p>
-  <p class="text-center">Forgot Password? <a href="/password_reset">Reset password</a>.</p>
+  <div class="row justify-content-center">  
+    <div class="col-3 ">
+      <form method="POST" >
+        {% csrf_token %}
+        {{ login_form|crispy }}
+        <div class="login_button d-grid gap-2 text-center">
+          <button class="btn btn-primary" type="submit">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="forgotpwd">
+    <p class="text-center">Don't have an account? <a href="/register">Create an account</a>.</p>
+    <p class="text-center">Forgot Password? <a href="/password_reset">Reset password</a>.</p>
+  </div>  
 </div>
 
 {% endblock %}
