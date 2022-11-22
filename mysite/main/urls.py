@@ -1,14 +1,14 @@
 from django.urls import path
-from . import views
+from .views import *
 
 app_name = "main"   
 
 
 urlpatterns = [
-    path("", views.homepage, name="homepage"),
+    path("", homepage, name="homepage"),
 
-    path("register", views.register_request, name="register"),
-    path("login", views.login_request, name="login"),
-    path("logout", views.logout_request, name= "logout"),
-    path("password_reset", views.password_reset_request, name="password_reset")
+    path("register", RegisterStudentView.as_view(), name="register"),
+    path("login", LoginView.as_view(), name="login"),
+    path("logout", logout_request, name= "logout"),
+    path("password_reset", password_reset_request, name="password_reset")
 ]
