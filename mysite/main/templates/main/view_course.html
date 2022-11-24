@@ -1,0 +1,52 @@
+{% extends 'main/header.html' %}
+{% load static %}
+{% block title %}Courses{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+
+    <div class="col-12 col-sm-6 col-md-10">
+
+
+             <h3><strong>{{ course.course_name }}  </strong></h3>
+              <br/>
+
+                  <h4> <strong>Instructor :</strong> {{ course.teacher_name }} </h4>
+                           <br/>
+                  
+                  <p> <h4>About Course </h4>{{ course.course_description }} </p>
+
+                          <br/>
+                          {% if request.user.role == 'Teacher' %}
+                    <p class="text-center"><a href="{% url 'main:create_assignment' class=course.pk %}">Create Assignment</a>.</p>
+                    {% endif %}
+
+                    {% for foo in assignment %}
+                    {% if foo.course_name == course.course_name %}
+                    <h3><strong> {{ foo.title }}  </strong></h3>
+                    <hr/>
+                    <p> <h4>Content</h4> {{ foo.content }} </p>
+                    <br/>
+                    <p> <h4>Course Name</h4> {{ foo.course_name }} </p>
+                    <br/>
+                    <p> <h4>Marks</h4> {{ foo.marks }} </p>
+
+                    <p> <h4>Time</h4> {{ foo.duration }} hours </p>
+                    {% if request.user.role == 'Student' %}
+                    <p class="text-center"><a href="{% url 'main:submit_assignment' id=foo.id %}">Submit Assignment</a>.</p>
+                    {% endif %}
+                    {% if request.user.role == 'Teacher' %}
+                    <p class="text-center"><a href="{% url 'main:view_submissions' %}">View Submissions</a>.</p>
+                    {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+
+
+         </div>
+
+    </div>
+
+{% endblock %}

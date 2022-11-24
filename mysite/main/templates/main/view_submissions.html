@@ -1,0 +1,35 @@
+{% extends 'main/header.html' %}
+{% load static %}
+{% block title %}Assignments{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+
+        <div class="col-12 col-sm-6 col-md-10">
+                    <strong><h3>Assignments</h3></strong>
+        <hr/>
+            {% for foo in assignment_submission %}
+
+                <p> <h4>Name</h4> {{ foo.user.username }} </p>
+                <br/>
+                <p> <h4>Comment</h4> {{ foo.comment }}  </p>
+
+                <br/>
+            {% endfor %}
+
+
+
+
+            <br/>
+
+
+            <br/>
+
+
+        </div>
+
+    </div>
+
+{% endblock %}

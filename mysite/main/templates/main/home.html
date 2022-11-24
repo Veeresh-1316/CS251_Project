@@ -21,6 +21,10 @@
             {% if user.is_authenticated and user.role == 'Teacher' %}
             
             <li class="nav-item">
+            <a class="nav-link" href="/course_create">Create Course</a>
+            </li>
+
+            <li class="nav-item">
             <a class="nav-link" href="/logout">Logout</a>
             </li>
             <li class="nav-item">
@@ -46,7 +50,33 @@
         </ul>
         </div>
     </nav>
+    {% if user.is_authenticated  %}
+    <div class="row">
+        {% for course in course %}
+      <!-- Single Dentist Area -->
+      <div class="col-12 col-sm-6 col-md-4">
 
+        <div class="single-dentist-area mb-100">
+          
+          <!-- Dentist Content -->
+          <div class="dentist-content">
+            <!-- Social Info -->
+            <div class="dentist-social-info">
+
+            </div>
+            <!-- Dentist Info -->
+            <div class="dentist-info bg-gradient-overlay">
+              <h5>{{ course.course_name }} |  <a href="{% url 'main:course-view' course.id %}"> <small>VIEW COURSE</small></a> </h5>
+              <p>{{ course.teacher_name }} </p>
+
+
+            </div>
+          </div>
+        </div>
+                  </div>
+              {% endfor %}
+     </div>
+     {% endif %}
     <!-- Optional Javascript -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

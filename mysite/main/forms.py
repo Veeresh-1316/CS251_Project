@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User
+from .models import User,Course,Assignment,AssignmentSubmission
 
 ROLES = (
     ("Teacher",  "Teacher"),
@@ -123,4 +123,141 @@ class UserLoginForm(AuthenticationForm):
 
     def get_user(self):
         return self.user
+
+
+class CourseCreateForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ['course_name', 'teacher_name', 'course_description']
+
+    def __init__(self, *args, **kwargs):
+        super(CourseCreateForm, self).__init__(*args, **kwargs)
+        self.fields['course_name'].label = "Course Name"
+        self.fields['teacher_name'].label = "Teacher Name"
+        self.fields['course_description'].label = "Description"
+        #self.fields['end_date'].label = "End Date"
+
+        self.fields['course_name'].widget.attrs.update(
+            {
+                'placeholder': 'Enter Course Name',
+            }
+        )
+
+
+        self.fields['teacher_name'].widget.attrs.update(
+            {
+                'placeholder': 'Teacher Name',
+            }
+        )
+
+
+        self.fields['course_description'].widget.attrs.update(
+            {
+                'placeholder': 'Description',
+            }
+        )
+
+    def is_valid(self):
+        valid = super(CourseCreateForm, self).is_valid()
+
+        # if already valid, then return True
+        if valid:
+            return valid
+        return valid
+
+    def save(self, commit=True):
+        course = super(CourseCreateForm, self).save(commit=False)
+        if commit:
+            course.save()
+        return course
+
+
+class AssignmentCreateForm(forms.ModelForm):
+    class Meta:
+        model = Assignment
+        fields = ['title', 'content', 'marks', 'duration']
+
+    def __init__(self, *args, **kwargs):
+        super(AssignmentCreateForm, self).__init__(*args, **kwargs)
+        self.fields['title'].label = "Assignment Name"
+        self.fields['content'].label = "Content"
+        self.fields['marks'].label = "Marks"
+        self.fields['duration'].label = "Duration"
+
+        self.fields['title'].widget.attrs.update(
+            {
+                'placeholder': 'Enter A Name',
+            }
+        )
+
+        self.fields['content'].widget.attrs.update(
+            {
+                'placeholder': 'Content',
+            }
+        )
+
+        self.fields['marks'].widget.attrs.update(
+            {
+                'placeholder': 'Enter Marks',
+            }
+        )
+
+        self.fields['duration'].widget.attrs.update(
+            {
+                'placeholder': '3 hour, 2 hour etc ...',
+            }
+        )
+
+    def is_valid(self):
+        valid = super(AssignmentCreateForm, self).is_valid()
+
+        # if already valid, then return True
+        if valid:
+            return valid
+        return valid
+
+    def save(self, commit=True):
+        asg = super(AssignmentCreateForm, self).save(commit=False)
+        if commit:
+            asg.save()
+        return asg
+
+
+
+class AssignmentSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = AssignmentSubmission
+        fields = [ 'comment', 'file']
+
+    def __init__(self, *args, **kwargs):
+        super(AssignmentSubmissionForm, self).__init__(*args, **kwargs)
+        
+        self.fields['comment'].label = "Comment"
+        self.fields['file'].label = "Upload File"
+
+        self.fields['comment'].widget.attrs.update(
+            {
+                'placeholder': 'Enter Comments  Here',
+            }
+        )
+
+        self.fields['file'].widget.attrs.update(
+            {
+                'placeholder': 'Upload Your FILE Here',
+            }
+        )
+
+    def is_valid(self):
+        valid = super(AssignmentSubmissionForm, self).is_valid()
+
+        # if already valid, then return True
+        if valid:
+            return valid
+        return valid
+
+    def save(self, commit=True):
+        asg = super(AssignmentSubmissionForm, self).save(commit=False)
+        if commit:
+            asg.save()
+        return asg
 
