@@ -20,28 +20,24 @@
 
                           <br/>
                           {% if request.user.role == 'Teacher' %}
-                    <p class="text-center"><a href="{% url 'main:create_assignment' class=course.pk %}">Create Assignment</a>.</p>
+                    <p class="text-center"><a href="{% url 'main:create_assignment' pk=course.pk %}">Create Assignment</a>.</p>
                     {% endif %}
 
                     {% for foo in assignment %}
                     {% if foo.course_name == course.course_name %}
                     <h3><strong> {{ foo.title }}  </strong></h3>
                     <hr/>
-                    <p> <h4>Content</h4> {{ foo.content }} </p>
-                    <br/>
-                    <p> <h4>Course Name</h4> {{ foo.course_name }} </p>
-                    <br/>
-                    <p> <h4>Marks</h4> {{ foo.marks }} </p>
-
-                    <p> <h4>Time</h4> {{ foo.duration }} hours </p>
+                    <b>Content:</b> {{ foo.content }} <br/>
+                    <b>Marks:  </b> {{ foo.marks }} <br/>
+                    <b>Time:   </b> {{ foo.duration }} <br/>
+                    
                     {% if request.user.role == 'Student' %}
-                    <p class="text-center"><a href="{% url 'main:submit_assignment' id=foo.id %}">Submit Assignment</a>.</p>
+                    <p class="text-center"><a href="{% url 'main:submit_assignment' pk=foo.pk %}">Submit Assignment</a>.</p>
                     {% endif %}
                     <p class="text-center"><a href="{% url 'main:view_submissions' name=foo.course_name title=foo.title %}">View Submissions</a>.</p>
+                    <br/>
                     {% endif %}
                 {% endfor %}
-
-
 
          </div>
 

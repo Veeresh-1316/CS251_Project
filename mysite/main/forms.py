@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.core.files.storage import FileSystemStorage
 from .models import User,Course,Assignment,AssignmentSubmission
 
 ROLES = (
@@ -135,22 +136,17 @@ class CourseCreateForm(forms.ModelForm):
         self.fields['course_name'].label = "Course Name"
         self.fields['teacher_name'].label = "Teacher Name"
         self.fields['course_description'].label = "Description"
-        #self.fields['end_date'].label = "End Date"
 
         self.fields['course_name'].widget.attrs.update(
             {
                 'placeholder': 'Enter Course Name',
             }
         )
-
-
         self.fields['teacher_name'].widget.attrs.update(
             {
                 'placeholder': 'Teacher Name',
             }
         )
-
-
         self.fields['course_description'].widget.attrs.update(
             {
                 'placeholder': 'Description',
@@ -159,8 +155,6 @@ class CourseCreateForm(forms.ModelForm):
 
     def is_valid(self):
         valid = super(CourseCreateForm, self).is_valid()
-
-        # if already valid, then return True
         if valid:
             return valid
         return valid
@@ -175,7 +169,7 @@ class CourseCreateForm(forms.ModelForm):
 class AssignmentCreateForm(forms.ModelForm):
     class Meta:
         model = Assignment
-        fields = ['title', 'content', 'marks', 'duration']
+        fields = ['title', 'content', 'marks', 'duration', 'autograder']
 
     def __init__(self, *args, **kwargs):
         super(AssignmentCreateForm, self).__init__(*args, **kwargs)
@@ -183,35 +177,36 @@ class AssignmentCreateForm(forms.ModelForm):
         self.fields['content'].label = "Content"
         self.fields['marks'].label = "Marks"
         self.fields['duration'].label = "Duration"
+        self.fields['autograder'].label = "Autograder"
 
         self.fields['title'].widget.attrs.update(
             {
                 'placeholder': 'Enter A Name',
             }
         )
-
         self.fields['content'].widget.attrs.update(
             {
                 'placeholder': 'Content',
             }
         )
-
         self.fields['marks'].widget.attrs.update(
             {
                 'placeholder': 'Enter Marks',
             }
         )
-
         self.fields['duration'].widget.attrs.update(
             {
                 'placeholder': '3 hour, 2 hour etc ...',
             }
         )
+        self.fields['autograder'].widget.attrs.update(
+            {
+                'placeholder': 'Upload Autograder folder\n.sh script file\nand corresponding input output files',
+            }
+        )
 
     def is_valid(self):
         valid = super(AssignmentCreateForm, self).is_valid()
-
-        # if already valid, then return True
         if valid:
             return valid
         return valid
@@ -227,7 +222,7 @@ class AssignmentCreateForm(forms.ModelForm):
 class AssignmentSubmissionForm(forms.ModelForm):
     class Meta:
         model = AssignmentSubmission
-        fields = [ 'comment', 'file']
+        fields = ['comment', 'file']
 
     def __init__(self, *args, **kwargs):
         super(AssignmentSubmissionForm, self).__init__(*args, **kwargs)
@@ -240,7 +235,6 @@ class AssignmentSubmissionForm(forms.ModelForm):
                 'placeholder': 'Enter Comments  Here',
             }
         )
-
         self.fields['file'].widget.attrs.update(
             {
                 'placeholder': 'Upload Your FILE Here',

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.utils import timezone
+from django.utils.timezone import now
 
 from django.utils.translation import gettext as _
 
@@ -24,7 +24,7 @@ class User(AbstractUser):
         return self.courses.split(",") if self.courses else None
 
     def __str__(self):
-        return self.email
+        return self.username
 
 class Course(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -39,6 +39,9 @@ class Course(models.Model):
         return self.course_name
 
 
+def autograder_path(instance, filename):
+    return '{0}/{1}/{2}'.format(instance.course_name, instance.title, filename)
+
 class Assignment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course_name=models.CharField(max_length=100)
@@ -46,18 +49,26 @@ class Assignment(models.Model):
     content = models.TextField()
     marks = models.CharField(max_length=20)
     duration = models.CharField(max_length=100)
-    #created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=now)
+    autograder = models.FileField(null=True, blank=True, upload_to=autograder_path)
 
     def __str__(self):
-        return self.title
+        return self.course_name + ":" + self.title
 
+
+def submisison_path(instance, filename):
+    return '{0}/{1}/{2}'.format(instance.course_name, instance.assignment_title, filename)
 
 class AssignmentSubmission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     assignment_title = models.TextField(null=True, blank=True)
     course_name = models.TextField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
-    file = models.FileField(null=True, blank=True,upload_to="media")
+    file = models.FileField(null=True, blank=True, upload_to=submisison_path)
+    submitted_at = models.DateTimeField(default=now)
 
+    marks = models.TextField(null=False, blank=False, default='NA')
+    feedback = models.TextField(null=False, blank=False, default='Not Yet Graded')
+    
     def __str__(self):
-        return self.assignment_title
+        return self.user.username + ":" + self.course_name + ":" + self.assignment_title

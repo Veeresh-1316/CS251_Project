@@ -73,7 +73,7 @@
             <div class="dentist-info bg-gradient-overlay">
               <h5>{{ course.course_name }}
                 {% if request.user.role == 'Teacher' %} [{{ course.course_id }}] {% endif %}
-                |  <a href="{% url 'main:course-view' course.id %}"> <small>VIEW COURSE</small></a> </h5>
+                |  <a href="{% url 'main:course-view' course.pk %}"> <small>VIEW COURSE</small></a> </h5>
               <p>{{ course.teacher_name }} </p>
 
 

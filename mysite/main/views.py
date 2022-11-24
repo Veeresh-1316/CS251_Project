@@ -196,6 +196,10 @@ class CourseCreateView(CreateView):
 
 def course_join(request):
     form = course_register_form()
+    if not request.user.is_authenticated:
+        return reverse_lazy('main:login')
+    if request.user.is_authenticated and request.user.role != 'Student':
+        return reverse_lazy('main:login')
     if request.method=='POST':
         form = course_register_form(request.POST)
         if form.is_valid():
@@ -214,9 +218,11 @@ def course_join(request):
     return render(request=request, template_name="main/course_join.html", context={"form":form})
 
 
-def course_single(request, id):
-    course = get_object_or_404(Course, id=id)
+def course_single(request, pk):
+    course = get_object_or_404(Course, pk=pk)
     assignment=Assignment.objects.all().values()
+    if not request.user.is_authenticated:
+        return reverse_lazy('main:login')
     return render(request, "main/view_course.html", {'course': course, 'assignment': assignment })
 
 
@@ -238,7 +244,7 @@ class AssignmentCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        course = Course.objects.get(pk=self.kwargs['class'])
+        course = Course.objects.get(pk=self.kwargs['pk'])
         form.instance.course_name=course.course_name
         return super(AssignmentCreateView, self).form_valid(form)
 
@@ -251,24 +257,11 @@ class AssignmentCreateView(CreateView):
             return self.form_invalid(form)
             
 
-class AssignmentSubmissionListView(ListView):
-    model = AssignmentSubmission
-    template_name = 'main/assignment_submission_list.html'
-    context_object_name = 'assignment_submission'
-
-    @method_decorator(login_required(login_url=reverse_lazy('main:login')))
-    # @method_decorator(user_is_instructor, user_is_student)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(self.request, *args, **kwargs)
-
-    def get_queryset(self):
-        return self.model.objects.all().order_by('-id')  # filter(user_id=self.request.user.id).order_by('-id')
-
 class AssignmentSubmissionView(CreateView):
     template_name = 'main/submit_assignment.html'
     form_class = AssignmentSubmissionForm
     extra_context = {
-        'title': 'New Exam'
+        'title': 'New Assigment'
     }
     success_url = reverse_lazy('main:homepage')
 
@@ -281,11 +274,14 @@ class AssignmentSubmissionView(CreateView):
         return super().dispatch(self.request, *args, **kwargs)
 
     def form_valid(self, form):
-        AssignmentSubmission.objects.filter(user=self.request.user).delete()
         form.instance.user = self.request.user
-        assignment = Assignment.objects.get(id=self.kwargs['id'])
+        assignment = Assignment.objects.get(pk=self.kwargs['pk'])
         form.instance.assignment_title = assignment.title
         form.instance.course_name = assignment.course_name
+        prev = AssignmentSubmission.objects.filter(user=self.request.user, assignment_title=assignment.title, course_name=assignment.course_name)
+        for i in prev:
+            i.file.delete()
+            i.delete()
         return super(AssignmentSubmissionView, self).form_valid(form)
 
     def post(self, request, *args, **kwargs):
@@ -310,4 +306,4 @@ class AssignmentSubmissionListView(ListView):
     def get_queryset(self):
         title= self.kwargs['title']
         name = self.kwargs['name']
-        return self.model.objects.all().filter(assignment_title=title , course_name=name).order_by('-id')
+        return self.model.objects.filter(assignment_title=title , course_name=name).order_by('-id')
