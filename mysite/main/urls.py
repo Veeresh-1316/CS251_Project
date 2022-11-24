@@ -13,6 +13,7 @@ urlpatterns = [
     path("logout", logout_request, name= "logout"),
     path("password_reset", password_reset_request, name="password_reset"),
     path("course_create",CourseCreateView.as_view(),name="course_create"),
+    path("course_join",course_join,name="course_join"),
     path('<int:id>/course-view/', course_single, name='course-view'),
     
     path('create_assignment/<int:class>/', AssignmentCreateView.as_view(), name='create_assignment'),

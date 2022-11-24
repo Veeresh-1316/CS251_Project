@@ -261,3 +261,5 @@ class AssignmentSubmissionForm(forms.ModelForm):
             asg.save()
         return asg
 
+class course_register_form(forms.Form):
+    course_id = forms.CharField(max_length=6)

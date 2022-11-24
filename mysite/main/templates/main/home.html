@@ -34,6 +34,10 @@
             {% elif user.is_authenticated and user.role == 'Student' %}
             
             <li class="nav-item">
+            <a class="nav-link" href="/course_join">Join Course</a>
+            </li>
+
+            <li class="nav-item">
             <a class="nav-link" href="/logout">Logout</a>
             </li>
             <li class="nav-item">
@@ -53,6 +57,7 @@
     {% if user.is_authenticated  %}
     <div class="row">
         {% for course in course %}
+        {% if course.course_id in request.user.get_courses %}
       <!-- Single Dentist Area -->
       <div class="col-12 col-sm-6 col-md-4">
 
@@ -66,7 +71,9 @@
             </div>
             <!-- Dentist Info -->
             <div class="dentist-info bg-gradient-overlay">
-              <h5>{{ course.course_name }} |  <a href="{% url 'main:course-view' course.id %}"> <small>VIEW COURSE</small></a> </h5>
+              <h5>{{ course.course_name }}
+                {% if request.user.role == 'Teacher' %} [{{ course.course_id }}] {% endif %}
+                |  <a href="{% url 'main:course-view' course.id %}"> <small>VIEW COURSE</small></a> </h5>
               <p>{{ course.teacher_name }} </p>
 
 
@@ -74,6 +81,7 @@
           </div>
         </div>
                   </div>
+                  {% endif %}
               {% endfor %}
      </div>
      {% endif %}

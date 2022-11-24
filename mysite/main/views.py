@@ -15,9 +15,9 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.views.generic import CreateView, FormView,ListView
 from django.http import HttpResponseRedirect
-from .forms import CourseCreateForm ,AssignmentCreateForm, AssignmentSubmissionForm
-from .models import Course,Assignment,AssignmentSubmission
-from .forms import NewUserForm, UserLoginForm
+from .forms import *
+from .models import *
+import string, random
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -178,6 +178,9 @@ class CourseCreateView(CreateView):
         return super().dispatch(self.request, *args, **kwargs)
     def form_valid(self, form):
         form.instance.user = self.request.user
+        form.instance.course_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        self.request.user.courses = self.request.user.add_course(form.instance.course_id)
+        self.request.user.save(update_fields=['courses'])
         return super(CourseCreateView, self).form_valid(form)
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -191,19 +194,24 @@ class CourseCreateView(CreateView):
             return self.form_invalid(form)
 
 
-
-#class CourseView(ListView):
-#    model = Course
-#    template_name = 'main/courses.html'
-#    context_object_name = 'course'
-#
-#    @method_decorator(login_required(login_url=reverse_lazy('authentication:login')))
-#    # @method_decorator(user_is_instructor, user_is_student)
-#    def dispatch(self, request, *args, **kwargs):
-#        return super().dispatch(self.request, *args, **kwargs)
-#
-#    def get_queryset(self):
-#        return self.model.objects.all().order_by('-id')  # filter(user_id=self.request.user.id).order_by('-id')
+def course_join(request):
+    form = course_register_form()
+    if request.method=='POST':
+        form = course_register_form(request.POST)
+        if form.is_valid():
+            course_id = form.cleaned_data['course_id']
+            print(course_id)
+            if Course.objects.filter(course_id=course_id):
+                if (not request.user.get_courses()) or (course_id not in request.user.get_courses()):
+                    request.user.courses = request.user.add_course(course_id)
+                    request.user.save(update_fields=['courses'])
+                    messages.success(request, 'Course Registered successfully !')
+                    return redirect('main:homepage')
+                messages.error(request, 'Course already registered.')
+            else:
+                messages.error(request, 'An Invlaid Course Code has been entered.')
+    form = course_register_form()
+    return render(request=request, template_name="main/course_join.html", context={"form":form})
 
 
 def course_single(request, id):
@@ -273,8 +281,9 @@ class AssignmentSubmissionView(CreateView):
         return super().dispatch(self.request, *args, **kwargs)
 
     def form_valid(self, form):
+        AssignmentSubmission.objects.filter(user=self.request.user).delete()
         form.instance.user = self.request.user
-        assignment=Assignment.objects.get(id=self.kwargs['id'])
+        assignment = Assignment.objects.get(id=self.kwargs['id'])
         form.instance.assignment_title = assignment.title
         form.instance.course_name = assignment.course_name
         return super(AssignmentSubmissionView, self).form_valid(form)

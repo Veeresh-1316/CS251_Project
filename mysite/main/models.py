@@ -14,15 +14,22 @@ ROLES = (
 
 class User(AbstractUser):
     role = models.CharField(max_length=30, choices=ROLES, default="Student")
-
+    courses = models.TextField(blank=True)
     objects = UserManager()
-    
+
+    def add_course(self, element):
+        self.courses += "," + element if self.courses else element
+        return self.courses
+    def get_courses(self):
+        return self.courses.split(",") if self.courses else None
+
     def __str__(self):
         return self.email
 
 class Course(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course_name = models.CharField(max_length=100)
+    course_id = models.CharField(max_length=6)
     teacher_name = models.CharField(max_length=50)
     course_description = models.TextField()
     #created_at = models.DateField(default=timezone.now)
