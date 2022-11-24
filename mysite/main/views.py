@@ -299,8 +299,6 @@ class AssignmentSubmissionListView(ListView):
         return super().dispatch(self.request, *args, **kwargs)
 
     def get_queryset(self):
-        #assignment=Assignment.objects.get(id=self.kwargs['id'])
-        #title=assignment.title
-        #name=assignment.course_name
-        #sup = self.model.objects.all().order_by('-id').filter(assignment_title=title , course_name=name)
-        return self.model.objects.all()
+        title= self.kwargs['title']
+        name = self.kwargs['name']
+        return self.model.objects.all().filter(assignment_title=title , course_name=name).order_by('-id')

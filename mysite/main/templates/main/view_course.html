@@ -37,9 +37,7 @@
                     {% if request.user.role == 'Student' %}
                     <p class="text-center"><a href="{% url 'main:submit_assignment' id=foo.id %}">Submit Assignment</a>.</p>
                     {% endif %}
-                    {% if request.user.role == 'Teacher' %}
-                    <p class="text-center"><a href="{% url 'main:view_submissions' %}">View Submissions</a>.</p>
-                    {% endif %}
+                    <p class="text-center"><a href="{% url 'main:view_submissions' name=foo.course_name title=foo.title %}">View Submissions</a>.</p>
                     {% endif %}
                 {% endfor %}
 
