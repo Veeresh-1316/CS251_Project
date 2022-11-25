@@ -26,18 +26,19 @@ from django.contrib.auth.decorators import login_required
 User = get_user_model()
 
 def homepage(request):
-    """Request for homepage
+    """View for the homepage
 
     Args:
-        request (): Request
+        request (): Request object
 
     Returns:
-        view: Render of the view
+        Response object: View for the homepage
     """
     course = Course.objects.all().values()
     return render(request=request, template_name='main/home.html', context = {'course': course})
 
 class RegisterStudentView(CreateView):
+    """Class for registering new account"""
     model = User
     form_class = NewUserForm
     template_name = 'main/register.html'
@@ -100,6 +101,7 @@ class RegisterStudentView(CreateView):
 #     return render(request=request, template_name="main/login.html", context={"login_form":form})
 
 class LoginView(FormView):
+    """Class for login view"""
     success_url = '/'
     form_class = UserLoginForm
     template_name = 'main/login.html'
@@ -137,6 +139,14 @@ def logout_request(request):
 	return redirect("main:homepage")
 
 def password_reset_request(request):
+    """View for password reset
+
+    Args:
+        request (): Request Object
+
+    Returns:
+        View for password reset request
+    """
 	if request.method == "POST":
 		password_reset_form = PasswordResetForm(request.POST)
 		if password_reset_form.is_valid():
@@ -204,6 +214,14 @@ class CourseCreateView(CreateView):
 
 
 def course_join(request):
+    """View for joinging a course
+
+    Args:
+        request (): Request Object
+
+    Returns:
+        View for joining course is returned
+    """
     form = course_register_form()
     if not request.user.is_authenticated:
         return reverse_lazy('main:login')
@@ -228,6 +246,15 @@ def course_join(request):
 
 
 def manual_grade(request, id):
+    """View for manual grading
+
+    Args:
+        request (): Request Object
+        id (): ID of course
+
+    Returns:
+        View for manual grading
+    """
     form = manual_grade_form()
     if not request.user.is_authenticated:
         return reverse_lazy('main:login')
@@ -247,6 +274,16 @@ def manual_grade(request, id):
     return render(request=request, template_name="main/manual_grade.html", context={"form":form})
 
 def manual_grade_all(request, name, title):
+    """Manual grading for all registered students
+
+    Args:
+        request (): Request Object
+        name (string): Name of course
+        title (string): Title of assignment
+
+    Returns:
+        View of the manual grading portal
+    """
     form = manual_grade_all_form()
     if not request.user.is_authenticated:
         return reverse_lazy('main:login')

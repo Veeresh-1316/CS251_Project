@@ -12,6 +12,8 @@ ROLES = (
 class NewUserForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
+        """Constructor class
+        """
         super(NewUserForm, self).__init__(*args, **kwargs)
         self.fields['username'].label = "Username"
         self.fields['role'].label = "Role"
@@ -58,6 +60,14 @@ class NewUserForm(UserCreationForm):
         }
 
     def save(self, commit=True):
+        """Saves the user model
+
+        Args:
+            commit (bool, optional): For committing the model. Defaults to True.
+
+        Returns:
+            User: Model is returned
+        """
         user = super(UserCreationForm, self).save(commit=False)
         # user.role = self.cleaned_data('role')
         if commit:
@@ -101,12 +111,19 @@ class UserLoginForm(AuthenticationForm):
     )
 
     def __init__(self, *args, **kwargs):
+        """Constructor class
+        """
         super().__init__(*args, **kwargs)
         self.user = None
         self.fields['username'].widget.attrs.update({'placeholder': 'Enter Username'})
         self.fields['password'].widget.attrs.update({'placeholder': 'Enter Password'})
 
     def clean(self, *args, **kwargs):
+        """Function to clean the username and passowrd
+
+        Returns:
+            User: Cleaned user details
+        """
         username = self.cleaned_data.get("username")
         password = self.cleaned_data.get("password")
 
@@ -123,6 +140,11 @@ class UserLoginForm(AuthenticationForm):
         return super(UserLoginForm, self).clean(*args, **kwargs)
 
     def get_user(self):
+        """Getter for user
+
+        Returns:
+            User: Returns the user model
+        """
         return self.user
 
 
@@ -132,6 +154,8 @@ class CourseCreateForm(forms.ModelForm):
         fields = ['course_name', 'teacher_name', 'course_description']
 
     def __init__(self, *args, **kwargs):
+        """Constructor
+        """
         super(CourseCreateForm, self).__init__(*args, **kwargs)
         self.fields['course_name'].label = "Course Name"
         self.fields['teacher_name'].label = "Teacher Name"
@@ -154,12 +178,25 @@ class CourseCreateForm(forms.ModelForm):
         )
 
     def is_valid(self):
+        """Returns if the form is valid or not
+
+        Returns:
+            bool: True if valid, False if not valid
+        """
         valid = super(CourseCreateForm, self).is_valid()
         if valid:
             return valid
         return valid
 
     def save(self, commit=True):
+        """For saving the model of the course
+
+        Args:
+            commit (bool, optional): For committing the model. Defaults to True.
+
+        Returns:
+            Course: Returns a course model
+        """
         course = super(CourseCreateForm, self).save(commit=False)
         if commit:
             course.save()
@@ -172,6 +209,8 @@ class AssignmentCreateForm(forms.ModelForm):
         fields = ['title', 'content', 'marks', 'duration', 'file_types', 'autograder']
 
     def __init__(self, *args, **kwargs):
+        """Constructor
+        """
         super(AssignmentCreateForm, self).__init__(*args, **kwargs)
         self.fields['title'].label = "Assignment Name"
         self.fields['content'].label = "Content"
@@ -212,12 +251,25 @@ class AssignmentCreateForm(forms.ModelForm):
         )
 
     def is_valid(self):
+        """Checks if the model is valid
+
+        Returns:
+            bool: True if valid, False if invalid
+        """
         valid = super(AssignmentCreateForm, self).is_valid()
         if valid:
             return valid
         return valid
 
     def save(self, commit=True):
+        """Saves the assignment model to the database
+
+        Args:
+            commit (bool, optional): For committing the data. Defaults to True.
+
+        Returns:
+            Assignment: The assignment data is returned
+        """
         asg = super(AssignmentCreateForm, self).save(commit=False)
         if commit:
             asg.save()
@@ -231,6 +283,8 @@ class AssignmentSubmissionForm(forms.ModelForm):
         fields = ['comment', 'file']
 
     def __init__(self, *args, **kwargs):
+        """Constructor
+        """
         super(AssignmentSubmissionForm, self).__init__(*args, **kwargs)
         
         self.fields['comment'].label = "Comment"
@@ -248,6 +302,11 @@ class AssignmentSubmissionForm(forms.ModelForm):
         )
 
     def is_valid(self):
+        """Checks if the model is valid
+
+        Returns:
+            bool: True if valid, False if invalid
+        """
         valid = super(AssignmentSubmissionForm, self).is_valid()
 
         # if already valid, then return True
@@ -256,6 +315,14 @@ class AssignmentSubmissionForm(forms.ModelForm):
         return valid
 
     def save(self, commit=True):
+        """Saves the assignment model to the database
+
+        Args:
+            commit (bool, optional): For committing the data. Defaults to True.
+
+        Returns:
+            Assignment: The assignment data is returned
+        """
         asg = super(AssignmentSubmissionForm, self).save(commit=False)
         print(asg.file.name)
         if commit:

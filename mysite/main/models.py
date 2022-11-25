@@ -14,20 +14,35 @@ ROLES = (
 )
 
 class User(AbstractUser):
+    """Class for User model"""
     role = models.CharField(max_length=30, choices=ROLES, default="Student")
     courses = models.TextField(blank=True)
     objects = UserManager()
 
     def add_course(self, element):
+        """Adds course attribute to User
+
+        Args:
+            element (course): The course to be added
+
+        Returns:
+            Returns all the courses 
+        """
         self.courses += "," + element if self.courses else element
         return self.courses
     def get_courses(self):
+        """Getter for courses
+
+        Returns:
+            Courses: All the courses enrolled are returned
+        """
         return self.courses.split(",") if self.courses else None
 
     def __str__(self):
         return self.username
 
 class Course(models.Model):
+    """Class for Course model"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course_name = models.CharField(max_length=100)
     course_id = models.CharField(max_length=6)
@@ -41,6 +56,15 @@ class Course(models.Model):
 
 
 def autograder_path(instance, filename):
+    """Returns the path for the autograder
+
+    Args:
+        instance (): Instance
+        filename (string): Name of file
+
+    Returns:
+        string : Path for the autograder
+    """
     return '{0}/{1}/{2}'.format(instance.course_name, instance.title, filename)
 
 class Assignment(models.Model):
@@ -59,6 +83,15 @@ class Assignment(models.Model):
 
 
 def submisison_path(instance, filename):
+    """Returns the submission path
+
+    Args:
+        instance (): Instance
+        filename (string): Name of the file
+
+    Returns:
+        Path of the submission file
+    """
     return '{0}/{1}/{2}'.format(instance.course_name, instance.assignment_title, filename)
 
 class AssignmentSubmission(models.Model):

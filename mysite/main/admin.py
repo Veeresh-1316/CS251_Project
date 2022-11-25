@@ -5,6 +5,7 @@ from .forms import NewUserForm
 from .models import User, Course, Assignment,AssignmentSubmission
 
 class CustomUserAdmin(UserAdmin):
+    """ Creates a model for a custom user admin"""
     add_form = NewUserForm
     model = User
     list_display = ('username', 'email', 'is_staff', 'is_active')

@@ -10,10 +10,11 @@ import os
 import sys
 
 # I've simplified this a little to use append instead of insert.
-sys.path.append(os.path.abspath('../'))
+# sys.path.append(os.path.abspath('../'))
+sys.path.append(os.path.abspath('../mysite'))
 
 # Specify settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.mysite.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 
 # Setup Django
 import django
@@ -26,7 +27,7 @@ author = 'Veeresh, Pratham, Faiz'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = ['sphinx.ext.autodoc']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']

@@ -6,6 +6,8 @@ import mimetypes
 class ContentTypeRestrictedFileField(FileField):
 
     def __init__(self, *args, **kwargs):
+        """Constructor function
+        """
         self.content_types = kwargs.pop("content_types")
         self.types = []
         mimetypes.init()
@@ -16,6 +18,11 @@ class ContentTypeRestrictedFileField(FileField):
         super(ContentTypeRestrictedFileField, self).__init__(*args, **kwargs)
 
     def clean(self, *args, **kwargs):
+        """Function to clean data which is given
+
+        Returns:
+            Cleaned version of data
+        """
         data = super(ContentTypeRestrictedFileField, self).clean(*args, **kwargs)
         file = data.file
         try:
