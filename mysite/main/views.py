@@ -21,6 +21,9 @@ import string, random, csv, os
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from zipfile import ZipFile
+import tarfile
+import filecmp
 
 User = get_user_model()
 
@@ -392,6 +395,32 @@ class AssignmentSubmissionView(CreateView):
         form.instance.assignment_title = assignment.title
         form.instance.course_name = assignment.course_name
         prev = AssignmentSubmission.objects.filter(user=self.request.user, assignment_title=assignment.title, course_name=assignment.course_name)
+        
+        
+        split_tup=os.path.splitext(form.instance.file.name)
+        if split_tup[1]!=assignment.file_types:
+            return self.form_invalid(form)
+        corr=True
+        if assignment.file_types==".zip":
+            with ZipFile(form.instance.file, 'r') as zObject:
+                zObject.extractall()
+            os.system("tree '{0}' > temp.txt".format(split_tup[0]))
+            corr=filecmp.cmp(assignment.tree.url, 'temp.txt')
+            os.system("rm temp.txt")
+            os.system("rm -r '{0}'".format(split_tup[0]))
+
+       
+        if assignment.file_types==".gz":
+            handle_uploaded_file(form.instance.file)
+            os.system("tar -xvzf media/'{0}'".format(form.instance.file.name))
+            os.system("rm -r media/'{0}'".format(form.instance.file.name))
+            os.system("tree '{0}' > temp.txt".format(split_tup[0]))
+            corr=filecmp.cmp(assignment.tree.url, 'temp.txt')
+            os.system("rm temp.txt")
+            os.system("rm -r '{0}'".format(split_tup[0]))
+
+        if not corr:
+            return self.form_invalid(form)
         for i in prev:
             i.file.delete()
             i.delete()
