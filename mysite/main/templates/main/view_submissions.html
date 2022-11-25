@@ -13,14 +13,17 @@
 
             
             {% if request.user.role == "Teacher" %}
-                
-                
+            {% for foo in assignment_submission %}
+                <a href="{% url 'main:manual_grade_all' name=foo.course_name title=foo.assignment_title %}?next={{ request.path|urlencode }}">Subumit CSV file to grade</a>
+            {% endfor %}
                     <table class="table">
                         <thead>
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col">Comment</th>
                                 <th scope="col">Download File</th>
+                                <th scope="col">Marks</th>
+                                <th scope="col">Feedback</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -29,26 +32,42 @@
                                 <th scope="row">{{ foo.user.username }}</td>
                                 <td>{{ foo.comment }}</td>
                                 <td><a href="{{foo.file.url}}" download>Download</a></td>
+                                <td> {{ foo.marks }}<br/><a href="{% url 'main:manual_grade' foo.pk %}?next={{ request.path|urlencode }}">Grade</a></td>
+                                <td> {{ foo.feedback }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 
 
-            {% elif request.user == foo.user %}
+            {% elif request.user == "Student" %}
         
                 {% for foo in assignment_submission %}
-                    <b>Name:</b> {{ foo.user.username }}    <b>Comment:</b> {{ foo.comment }}
-                    <a href="{{foo.file.url}}" download>Download</a>
-
-                    <br/>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Comment</th>
+                            <th scope="col">Download File</th>
+                            <th scope="col">Marks</th>
+                            <th scope="col">Feedback</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for foo in assignment_submission %}
+                        <tr>
+                            <th scope="row">{{ foo.user.username }}</td>
+                            <td>{{ foo.comment }}</td>
+                            <td><a href="{{foo.file.url}}" download>Download</a></td>
+                            <td> {{ foo.marks }}</td>
+                            <td>{{ foo.feedback }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% endfor %}
             {% endif %}
             
-
-
-
-
             <br/>
 
 

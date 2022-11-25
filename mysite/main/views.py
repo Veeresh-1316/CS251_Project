@@ -17,7 +17,8 @@ from django.views.generic import CreateView, FormView,ListView
 from django.http import HttpResponseRedirect
 from .forms import *
 from .models import *
-import string, random
+from .functions import *
+import string, random, csv, os
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -218,8 +219,56 @@ def course_join(request):
     return render(request=request, template_name="main/course_join.html", context={"form":form})
 
 
+def manual_grade(request, pk):
+    form = manual_grade_form()
+    if not request.user.is_authenticated:
+        return reverse_lazy('main:login')
+    if request.user.is_authenticated and request.user.role != 'Teacher':
+        return reverse_lazy('main:login')
+    if request.method=='POST':
+        form = manual_grade_form(request.POST)
+        if form.is_valid():
+            submisison = get_object_or_404(AssignmentSubmission, pk=pk)
+            submisison.marks = form.cleaned_data['marks']
+            submisison.feedback = form.cleaned_data['feedback']
+            submisison.save(update_fields=['marks', 'feedback'])
+            messages.success(request, 'Grade Updated !')
+            next = request.POST.get('next', '/')
+            return HttpResponseRedirect(next)
+    form = manual_grade_form()
+    return render(request=request, template_name="main/manual_grade.html", context={"form":form})
+
+def manual_grade_all(request, name, title):
+    form = manual_grade_all_form()
+    if not request.user.is_authenticated:
+        return reverse_lazy('main:login')
+    if request.user.is_authenticated and request.user.role != 'Teacher':
+        return reverse_lazy('main:login')
+    if request.method=='POST':
+        form = manual_grade_all_form(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = request.FILES['csv_file']
+            handle_uploaded_file(csv_file)
+            submissions = AssignmentSubmission.objects.filter(course_name=name, assignment_title=title)
+            with open('media/'+csv_file.name, 'r') as file:
+                csvreader = csv.reader(file)
+                header = next(csvreader)
+                for row in csvreader:
+                    for foo in submissions:
+                        if foo.user.username == row[0]:
+                            foo.marks = row[1]
+                            foo.feedback = row[2]
+                            foo.save(update_fields=['marks','feedback'])
+            os.remove('media/'+csv_file.name)
+            messages.success(request, 'Grades Updated !')
+            prev = request.POST.get('next', '/')
+            return HttpResponseRedirect(prev)
+    form = manual_grade_all_form()
+    return render(request=request, template_name="main/manual_grade_all.html", context={"form":form})
+
+
 def course_single(request, pk):
-    course = get_object_or_404(Course, pk=pk)
+    course = get_object_or_404(Course, course_id=pk)
     assignment=Assignment.objects.all().values()
     if not request.user.is_authenticated:
         return reverse_lazy('main:login')
@@ -252,6 +301,7 @@ class AssignmentCreateView(CreateView):
         self.object = None
         form = self.get_form()
         if form.is_valid():
+            self.success_url = request.POST.get('next', '/')
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -290,6 +340,7 @@ class AssignmentSubmissionView(CreateView):
         assignment = Assignment.objects.get(pk=self.kwargs['pk'])
         form.instance.file_types = assignment.file_types
         if form.is_valid():
+            self.success_url = request.POST.get('next', '/')
             return self.form_valid(form)
         else:
             return self.form_invalid(form)

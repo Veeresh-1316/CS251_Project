@@ -263,3 +263,15 @@ class AssignmentSubmissionForm(forms.ModelForm):
 
 class course_register_form(forms.Form):
     course_id = forms.CharField(max_length=6)
+
+class manual_grade_form(forms.Form):
+    marks = forms.CharField(max_length=20)
+    feedback = forms.CharField(max_length=250)
+
+class manual_grade_all_form(forms.Form):
+    csv_file = forms.FileField(required=True)
+    # def is_valid(self):
+    #     if self.csv_file:
+    #         return True
+    #     else"
+    #         return False

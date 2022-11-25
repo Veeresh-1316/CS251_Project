@@ -37,7 +37,7 @@ class Course(models.Model):
     end_date = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.course_name
+        return self.course_id
 
 
 def autograder_path(instance, filename):
@@ -67,7 +67,7 @@ class AssignmentSubmission(models.Model):
     course_name = models.TextField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
     file_types = models.CharField(null=True, blank=True, max_length=100)
-    file = ContentTypeRestrictedFileField(null=True, blank=True, upload_to=submisison_path, content_types=str(file_types).split(","))
+    file = models.FileField(null=True, blank=True, upload_to=submisison_path)
     submitted_at = models.DateTimeField(default=now)
 
     marks = models.TextField(null=False, blank=False, default='NA')
