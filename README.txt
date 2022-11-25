@@ -17,5 +17,5 @@ git push
 git pull
     (activate virtual environment which has name 'env' ONLY)
     Once activated,
-python3 install -r requirements.txt
+pip install -r requirements.txt
     Then, continue editing....
