@@ -27,6 +27,7 @@ What we have implemented could be called something like a 'mini-moodle'. It just
 + Only a registered user will be able to login and view the website
 + A secure login with a user set-up password and a unique username
 + The users can also change their password using an encrypted link sent on their email
++ Once logged in, the users can view and also edit their profile still under the constraint of unique email and username
 
 ### Courses and Assignments:
 + A teacher can create courses that are visible to all the registered users (i.e. registered students)
@@ -55,6 +56,7 @@ What we have implemented could be called something like a 'mini-moodle'. It just
 ### Highlights and Bonuses:
 + Unique username with an encrypted password login
 + Password resetting through an encoded link sent on the user mail
++ View and Edit user profile
 + Creating courses and assignments and Registering to courses via an email invitation or a unique code
 + Able to only view data concerned with the particular user
 + Students can submit files to assignments, which is type and tree restricted
