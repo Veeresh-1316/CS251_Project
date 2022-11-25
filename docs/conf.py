@@ -14,9 +14,9 @@ import sys
 sys.path.append(os.path.abspath('../mysite'))
 
 # Specify settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
 
-# Setup Django
+# # Setup Django
 import django
 django.setup()
 
@@ -30,7 +30,7 @@ author = 'Veeresh, Pratham, Faiz'
 extensions = ['sphinx.ext.autodoc']
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', "**/*.migrations.rst",]
 
 
 

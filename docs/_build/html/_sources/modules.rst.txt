@@ -1,7 +1,9 @@
-CS251_Project
-=============
+mysite
+======
 
 .. toctree::
    :maxdepth: 4
 
-   temp
+   main
+   manage
+   mysite
