@@ -10,20 +10,41 @@
         <div class="col-12 col-sm-6 col-md-10">
                     <strong><h3>Assignments</h3></strong>
         <hr/>
-        
-            {% for foo in assignment_submission %}
+
+            
             {% if request.user.role == "Teacher" %}
-                <b>Name:</b> {{ foo.user.username }}    <b>Comment:</b> {{ foo.comment }}
-                <a href="{{foo.file.url}}" download>Download</a>
+                
+                
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Comment</th>
+                                <th scope="col">Download File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for foo in assignment_submission %}
+                            <tr>
+                                <th scope="row">{{ foo.user.username }}</td>
+                                <td>{{ foo.comment }}</td>
+                                <td><a href="{{foo.file.url}}" download>Download</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                
 
-                <br/>
             {% elif request.user == foo.user %}
-                <b>Name:</b> {{ foo.user.username }}    <b>Comment:</b> {{ foo.comment }}
-                <a href="{{foo.file.url}}" download>Download</a>
+        
+                {% for foo in assignment_submission %}
+                    <b>Name:</b> {{ foo.user.username }}    <b>Comment:</b> {{ foo.comment }}
+                    <a href="{{foo.file.url}}" download>Download</a>
 
-                <br/>
+                    <br/>
+                {% endfor %}
             {% endif %}
-            {% endfor %}
+            
 
 
 
