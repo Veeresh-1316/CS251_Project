@@ -1,14 +1,13 @@
 from django.shortcuts import  render, redirect,get_object_or_404
-from django.contrib.auth import login, authenticate, logout, get_user_model
+from django.contrib.auth import logout, get_user_model
 from django.contrib import messages, auth
-from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
-from django.core.mail import send_mail, BadHeaderError, EmailMessage
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse
-from django.contrib.auth.models import User  
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes
+from django.contrib.auth.models import User
+from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
-# from .tokens import account_activation_token
+
 from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
@@ -67,39 +66,6 @@ class RegisterStudentView(CreateView):
             return render(request, 'main/register.html', {'form': form})
 
 
-# def register_request(request):
-#     if request.method == "POST":
-#         form = NewUserForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             messages.success(request, "Registration successful." )
-#             return redirect("main:homepage")
-#         messages.error(request, "Unsuccessful registration. Invalid information.")
-#     form = NewUserForm()
-#     return render (request=request, template_name="main/register.html", context={"register_form":form})
-
-# def login_request(request):
-#     if request.method == "POST":
-#         print("1\n")
-#         form = UserLoginForm(request, data=request.POST)
-#         # if form.is_valid():
-#         print("2\n")
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
-#         user = authenticate(username=username, password=password)
-#         if user is not None:
-#             print("3\n")
-#             login(request, user)
-#             messages.info(request, f"You are now logged in as {username}.")
-#             return redirect("main:homepage")
-#         else:
-#             messages.error(request,"Invalid username or password.")
-#         # else:
-#         #     messages.error(request,"Invalid username or password.")
-#     form = AuthenticationForm()
-#     return render(request=request, template_name="main/login.html", context={"login_form":form})
-
 class LoginView(FormView):
     """Class for login view"""
     success_url = '/'
@@ -147,37 +113,44 @@ def password_reset_request(request):
     Returns:
         View for password reset request
     """
-	if request.method == "POST":
-		password_reset_form = PasswordResetForm(request.POST)
-		if password_reset_form.is_valid():
-			data = password_reset_form.cleaned_data['email']
-			associated_users = User.objects.filter(Q(email=data))
-			if associated_users.exists():
-				for user in associated_users:
-					subject = "Password Reset Requested"
-					email_template_name = "main/password/password_reset_email.txt"
-					c = {
-					"email":user.email,
-					'domain':'127.0.0.1:8000',
-					'site_name': 'Website',
-					"uid": urlsafe_base64_encode(force_bytes(user.pk)),
-					"user": user,
-					'token': default_token_generator.make_token(user),
-					'protocol': 'http',
-					}
-					email = render_to_string(email_template_name, c)
-					try:
-						send_mail(subject, email, 'admin@example.com' , [user.email], fail_silently=False)
-					except BadHeaderError:
+    if request.method == "POST":
+        password_reset_form = PasswordResetForm(request.POST)
+        if password_reset_form.is_valid():
+            data = password_reset_form.cleaned_data['email']
+            associated_users = User.objects.filter(Q(email=data))
+            if associated_users.exists():
+                for user in associated_users:
+                    subject = "Password Reset Requested"
+                    email_template_name = "main/password/password_reset_email.txt"
+                    c = {
+                    "email":user.email,
+                    'domain':'127.0.0.1:8000',
+                    'site_name': 'Website',
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "user": user,
+                    'token': default_token_generator.make_token(user),
+                    'protocol': 'http',
+                    }
+                    email = render_to_string(email_template_name, c)
+                    try:
+                        send_mail(subject, email, 'admin@example.com' , [user.email], fail_silently=False)
+                    except BadHeaderError:
 
-						return HttpResponse('Invalid header found.')
-						
-					messages.success(request, 'A message with reset password instructions has been sent to your inbox.')
-					return redirect ("main:homepage")
-			messages.error(request, 'An invalid email has been entered.')
-	password_reset_form = PasswordResetForm()
-	return render(request=request, template_name="main/password/password_reset.html", context={"password_reset_form":password_reset_form})
+                        return HttpResponse('Invalid header found.')
 
+                    messages.success(request, 'A message with reset password instructions has been sent to your inbox.')
+                    return redirect ("main:homepage")
+            messages.error(request, 'An invalid email has been entered.')
+    password_reset_form = PasswordResetForm()
+    return render(request=request, template_name="main/password/password_reset.html", context={"password_reset_form":password_reset_form})
+
+
+def join_course(request, uidb64, token, course_id):
+    pk = force_str(urlsafe_base64_decode(uidb64))
+    user = get_object_or_404(User, pk=pk)
+    user.courses = user.add_course(course_id)
+    user.save(update_fields=['courses'])
+    return redirect("main:homepage")
 
 
 class CourseCreateView(CreateView):
@@ -200,6 +173,27 @@ class CourseCreateView(CreateView):
         form.instance.course_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
         self.request.user.courses = self.request.user.add_course(form.instance.course_id)
         self.request.user.save(update_fields=['courses'])
+        users = User.objects.all()
+        for user in users:
+            if user.role == "Teacher":
+                continue
+            subject = "Register for Course"
+            email_template_name = "main/join_course_email.txt"
+            c = {
+            "email":user.email,
+            'domain':'127.0.0.1:8000',
+            'site_name': 'Website',
+            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+            "user": user,
+            "course_id": form.instance.course_id,
+            'token': default_token_generator.make_token(user),
+            'protocol': 'http',
+            }
+            email = render_to_string(email_template_name, c)
+            try:
+                send_mail(subject, email, 'admin@example.com' , [user.email], fail_silently=False)
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
         return super(CourseCreateView, self).form_valid(form)
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -231,7 +225,6 @@ def course_join(request):
         form = course_register_form(request.POST)
         if form.is_valid():
             course_id = form.cleaned_data['course_id']
-            print(course_id)
             if Course.objects.filter(course_id=course_id):
                 if (not request.user.get_courses()) or (course_id not in request.user.get_courses()):
                     request.user.courses = request.user.add_course(course_id)
@@ -382,7 +375,7 @@ class AssignmentSubmissionView(CreateView):
     def post(self, request, *args, **kwargs):
         self.object = None
         form = self.get_form()
-        assignment = Assignment.objects.get(pk=self.kwargs['pk'])
+        assignment = Assignment.objects.get(id=self.kwargs['id'])
         form.instance.file_types = assignment.file_types
         if form.is_valid():
             self.success_url = request.POST.get('next', '/')

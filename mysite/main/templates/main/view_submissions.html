@@ -40,7 +40,7 @@
                     </table>
                 
 
-            {% elif request.user == "Student" %}
+            {% elif request.user.role == "Student" %}
         
                 {% for foo in assignment_submission %}
                 <table class="table">

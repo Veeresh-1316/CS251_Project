@@ -75,31 +75,6 @@ class NewUserForm(UserCreationForm):
         return user
 
 
-# class NewUserForm(UserCreationForm):
-#     email = forms.EmailField(required=True)
-#     role = forms.ChoiceField(choices= ROLES, widget=forms.RadioSelect, required=True)
-
-#     class Meta:
-#         model = User
-#         fields = ("username", "email", "role", "password1", "password2")
-
-#     def clean_username(self):
-#         username = self.cleaned_data['username']
-#         try:
-#             account = User.objects.get(username=username)
-#         except Exception as e:
-#             return username
-#         raise forms.ValidationError(f"Username {username} is already rgistered")
-
-#     def save(self, commit=True):
-#         user = super(UserCreationForm, self).save(commit=False)
-#         user.email = self.cleaned_data['email'].lower()
-#         user.role = self.cleaned_data['role']
-#         user.set_password('password1')
-#         if commit:
-#             user.save()
-#         return user
-
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(
         label="Username"
@@ -324,7 +299,6 @@ class AssignmentSubmissionForm(forms.ModelForm):
             Assignment: The assignment data is returned
         """
         asg = super(AssignmentSubmissionForm, self).save(commit=False)
-        print(asg.file.name)
         if commit:
             asg.save()
         return asg
@@ -338,8 +312,3 @@ class manual_grade_form(forms.Form):
 
 class manual_grade_all_form(forms.Form):
     csv_file = forms.FileField(required=True)
-    # def is_valid(self):
-    #     if self.csv_file:
-    #         return True
-    #     else"
-    #         return False

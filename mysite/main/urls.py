@@ -14,6 +14,7 @@ urlpatterns = [
     path("password_reset", password_reset_request, name="password_reset"),
     path("course_create",CourseCreateView.as_view(),name="course_create"),
     path("course_join",course_join,name="course_join"),
+    path("join_course/<uidb64>/<token>/<course_id>",join_course,name="join_course"),
     path('view_couse/<str:id>', course_single, name='view_course'),
     path('manual_grade/<str:id>', manual_grade, name='manual_grade'),
     path('manual_grade_all/<str:name>/<str:title>', manual_grade_all, name="manual_grade_all"),
