@@ -29,15 +29,15 @@ What we have implemented could be called something like a 'mini-moodle'. It just
 + The users can also change their password using an encrypted link sent on their email
 
 ### Courses and Assignments:
-+ A teacher can create courses that are visibke to all the registered users (i.e. registered students)
-+ As soon as a techer creates a course, a randomly generated 6 letter code is associated with the course and an email is sent to all the students, with a link which they can use to register for the course directly
++ A teacher can create courses that are visible to all the registered users (i.e. registered students)
++ As soon as a teacher creates a course, a randomly generated 6 letter code is associated with the course and an email is sent to all the students, with a link which they can use to register for the course directly
 + The students can also join a specific course by entering the corresponding 6 letter course code on a separate page
-+ The teacher can only view his/her created courses and the studen can view only courses he/she has registered for
++ The teacher can only view his/her created courses and the student can view only courses he/she has registered for
 + Within the course page, the teacher can create assignments that shall be visible to all the students registerd for the course
-+ The students can view the assignments posted and can submit files to the corresponing assignment and later view and download their submisison
-+ Only the latest submisison of the student shall be stored
++ The students can view the assignments posted and can submit files to the corresponding assignment and later view and download their submission
++ Only the latest submission of the student shall be stored
 + The teacher can view all the submissions made by the students to a particular course
-+ He/She can download the submissions individually or download all the submissions a .tgz file
++ He/She can download the submissions individually or download all the submissions as a .tgz file
 
 ### Grading and Feedback:
 + The teacher can post grades and feedback to any particular assignment submission
@@ -49,11 +49,11 @@ What we have implemented could be called something like a 'mini-moodle'. It just
 
 ### Autograding and File Directory Verification
 + The teacher can also specify an expected tree directory structure of the submitted archives
-+ The students must match the tree structure, else thier submission won't be accepted
++ The students must match the tree structure, else their submission won't be accepted
 + The teacher can also submit an autograder file to evaluate the submissions of the students (Didn't find enough time to implement the autograding part but nevertheless accpeting the autograding script)
 
 ### Highlights and Bonuses:
-+ Unique username with an encrpted password login
++ Unique username with an encrypted password login
 + Password resetting through an encoded link sent on the user mail
 + Creating courses and assignments and Registering to courses via an email invitation or a unique code
 + Able to only view data concerned with the particular user
