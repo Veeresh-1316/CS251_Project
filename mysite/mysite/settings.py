@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'main.apps.MainConfig',
+    'main',
     'crispy_forms',
     'bootstrap4',
     'bootstrapform',
