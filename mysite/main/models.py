@@ -6,6 +6,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
 from .managers import UserManager
+from .validators import *
 
 ROLES = (
     ("Student", "Student"),
@@ -50,6 +51,7 @@ class Assignment(models.Model):
     marks = models.CharField(max_length=20)
     duration = models.CharField(max_length=100)
     created_at = models.DateTimeField(default=now)
+    file_types = models.CharField(null=False, blank=False, default=".zip", max_length=100)
     autograder = models.FileField(null=True, blank=True, upload_to=autograder_path)
 
     def __str__(self):
@@ -64,7 +66,8 @@ class AssignmentSubmission(models.Model):
     assignment_title = models.TextField(null=True, blank=True)
     course_name = models.TextField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
-    file = models.FileField(null=True, blank=True, upload_to=submisison_path)
+    file_types = models.CharField(null=True, blank=True, max_length=100)
+    file = ContentTypeRestrictedFileField(null=True, blank=True, upload_to=submisison_path, content_types=str(file_types).split(","))
     submitted_at = models.DateTimeField(default=now)
 
     marks = models.TextField(null=False, blank=False, default='NA')

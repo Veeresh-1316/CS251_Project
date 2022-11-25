@@ -287,6 +287,8 @@ class AssignmentSubmissionView(CreateView):
     def post(self, request, *args, **kwargs):
         self.object = None
         form = self.get_form()
+        assignment = Assignment.objects.get(pk=self.kwargs['pk'])
+        form.instance.file_types = assignment.file_types
         if form.is_valid():
             return self.form_valid(form)
         else:

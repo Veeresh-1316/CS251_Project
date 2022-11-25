@@ -169,7 +169,7 @@ class CourseCreateForm(forms.ModelForm):
 class AssignmentCreateForm(forms.ModelForm):
     class Meta:
         model = Assignment
-        fields = ['title', 'content', 'marks', 'duration', 'autograder']
+        fields = ['title', 'content', 'marks', 'duration', 'file_types', 'autograder']
 
     def __init__(self, *args, **kwargs):
         super(AssignmentCreateForm, self).__init__(*args, **kwargs)
@@ -177,6 +177,7 @@ class AssignmentCreateForm(forms.ModelForm):
         self.fields['content'].label = "Content"
         self.fields['marks'].label = "Marks"
         self.fields['duration'].label = "Duration"
+        self.fields['file_types'].label = "File Types for submisison"
         self.fields['autograder'].label = "Autograder"
 
         self.fields['title'].widget.attrs.update(
@@ -197,6 +198,11 @@ class AssignmentCreateForm(forms.ModelForm):
         self.fields['duration'].widget.attrs.update(
             {
                 'placeholder': '3 hour, 2 hour etc ...',
+            }
+        )
+        self.fields['file_types'].widget.attrs.update(
+            {
+                'placeholder': '.zip, .tar, .tgz, .pdf ....',
             }
         )
         self.fields['autograder'].widget.attrs.update(

@@ -14,7 +14,7 @@ urlpatterns = [
     path("password_reset", password_reset_request, name="password_reset"),
     path("course_create",CourseCreateView.as_view(),name="course_create"),
     path("course_join",course_join,name="course_join"),
-    path('<int:pk>/course-view/', course_single, name='course-view'),
+    path('<int:pk>/view_couse/', course_single, name='view_course'),
     
     path('create_assignment/<int:pk>/', AssignmentCreateView.as_view(), name='create_assignment'),
     path('submit_assignment/<int:pk>/', AssignmentSubmissionView.as_view(), name='submit_assignment'),
