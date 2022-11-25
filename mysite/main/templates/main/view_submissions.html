@@ -14,7 +14,8 @@
             
             {% if request.user.role == "Teacher" %}
             {% for foo in assignment_submission %}
-                <a href="{% url 'main:manual_grade_all' name=foo.course_name title=foo.assignment_title %}?next={{ request.path|urlencode }}">Subumit CSV file to grade</a>
+                <a href="{% url 'main:manual_grade_all' name=foo.course_name title=foo.assignment_title %}?next={{ request.path|urlencode }}">Subumit CSV file to grade</a><br/>
+                <a href="{{ parent }}" download>Download all submisisons</a>
             {% endfor %}
                     <table class="table">
                         <thead>

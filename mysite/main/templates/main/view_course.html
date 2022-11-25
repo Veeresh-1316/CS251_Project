@@ -34,7 +34,7 @@
                     {% if request.user.role == 'Student' %}
                     <p class="text-center"><a href="{% url 'main:submit_assignment' id=foo.id %}?next={{ request.path|urlencode }}">Submit Assignment</a>.</p>
                     {% endif %}
-                    <p class="text-center"><a href="{% url 'main:view_submissions' name=foo.course_name title=foo.title %}">View Submissions</a>.</p>
+                    <p class="text-center"><a href="{% url 'main:view_submissions' name=foo.course_name title=foo.title parent=foo.title%}">View Submissions</a>.</p>
                     <br/>
                     {% endif %}
                 {% endfor %}

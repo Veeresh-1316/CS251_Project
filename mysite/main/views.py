@@ -389,10 +389,22 @@ class AssignmentSubmissionListView(ListView):
     model = AssignmentSubmission
     template_name = 'main/view_submissions.html'
     context_object_name = 'assignment_submission'
+    parent = ''
     @method_decorator(login_required(login_url=reverse_lazy('main:login')))
     # @method_decorator(user_is_instructor, user_is_student)
     def dispatch(self, request, *args, **kwargs):
+        for x in self.model.objects.all():
+            f = x.file.url
+            break
+        parent = f[:f.rfind('/')]
+        os.system('tar -czf ' + parent[1:] + '.tgz ' + parent[1:])
+        self.parent = parent + '.tgz'
         return super().dispatch(self.request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['parent'] = self.parent
+        return context
 
     def get_queryset(self):
         title= self.kwargs['title']
