@@ -23,12 +23,17 @@
             <li class="nav-item">
             <a class="nav-link" href="/course_create">Create Course</a>
             </li>
-
             <li class="nav-item">
             <a class="nav-link" href="/logout">Logout</a>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="#">Welcome, Teacher {{user.username}}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'main:edit_profile' %}">Edit Profile</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'main:view_profile' %}">View Profile</a>
             </li>
     
             {% elif user.is_authenticated and user.role == 'Student' %}
@@ -36,12 +41,17 @@
             <li class="nav-item">
             <a class="nav-link" href="/course_join">Join Course</a>
             </li>
-
             <li class="nav-item">
             <a class="nav-link" href="/logout">Logout</a>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="#">Welcome, Student {{user.username}}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'main:edit_profile' %}">Edit Profile</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'main:view_profile' %}">View Profile</a>
             </li>
 
             {% else %}

@@ -25,6 +25,7 @@
                                 <th scope="col">Download File</th>
                                 <th scope="col">Marks</th>
                                 <th scope="col">Feedback</th>
+                                <th scope="col">Submited at</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,6 +36,7 @@
                                 <td><a href="{{foo.file.url}}" download>Download</a></td>
                                 <td> {{ foo.marks }}<br/><a href="{% url 'main:manual_grade' foo.id %}?next={{ request.path|urlencode }}">Grade</a></td>
                                 <td> {{ foo.feedback }}</td>
+                                <td> {{ foo.submitted_at }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

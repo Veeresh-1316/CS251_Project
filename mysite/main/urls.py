@@ -12,6 +12,9 @@ urlpatterns = [
     path("login", LoginView.as_view(), name="login"),
     path("logout", logout_request, name= "logout"),
     path("password_reset", password_reset_request, name="password_reset"),
+    path("view_profile", view_profile, name="view_profile"),
+    path("edit_profile", edit_profile, name="edit_profile"),
+    
     path("course_create",CourseCreateView.as_view(),name="course_create"),
     path("course_join",course_join,name="course_join"),
     path("join_course/<uidb64>/<token>/<course_id>",join_course,name="join_course"),

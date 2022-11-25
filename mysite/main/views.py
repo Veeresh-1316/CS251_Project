@@ -145,6 +145,30 @@ def password_reset_request(request):
     return render(request=request, template_name="main/password/password_reset.html", context={"password_reset_form":password_reset_form})
 
 
+def edit_profile(request):
+    form = edit_profile_form()
+    if not request.user.is_authenticated:
+        return reverse_lazy('main:login')
+    if request.method=='POST':
+        form = edit_profile_form(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data.get('username')
+            mail = form.cleaned_data.get('email')
+            if not User.objects.filter(username=name) and not User.objects.filter(email=mail):
+                if name:
+                    request.user.username = name
+                if mail:
+                    request.user.email = mail
+                request.user.save(update_fields=['username','email'])
+                messages.success(request, 'Profile Edited successfully !')
+                return redirect('main:homepage')
+            messages.error(request, 'Username or email already in use')
+    form = edit_profile_form()
+    return render(request=request, template_name="main/edit_profile.html", context={"form":form})
+
+def view_profile(request):
+    return render(request=request, template_name='main/view_profile.html')
+
 def join_course(request, uidb64, token, course_id):
     pk = force_str(urlsafe_base64_decode(uidb64))
     user = get_object_or_404(User, pk=pk)
@@ -265,6 +289,7 @@ def manual_grade(request, id):
             return HttpResponseRedirect(next)
     form = manual_grade_form()
     return render(request=request, template_name="main/manual_grade.html", context={"form":form})
+
 
 def manual_grade_all(request, name, title):
     """Manual grading for all registered students

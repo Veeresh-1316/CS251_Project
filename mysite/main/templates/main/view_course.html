@@ -11,14 +11,9 @@
 
 
              <h3><strong>{{ course.course_name }}  </strong></h3>
-              <br/>
-
                   <h4> <strong>Instructor :</strong> {{ course.teacher_name }} </h4>
-                           <br/>
-                  
                   <p> <h4>About Course </h4>{{ course.course_description }} </p>
 
-                          <br/>
                           {% if request.user.role == 'Teacher' %}
                     <p class="text-center"><a href="{% url 'main:create_assignment' id=course.course_id %}?next={{ request.path|urlencode }}">Create Assignment</a>.</p>
                     {% endif %}
@@ -27,9 +22,10 @@
                     {% if foo.course_name == course.course_name %}
                     <h3><strong> {{ foo.title }}  </strong></h3>
                     <hr/>
-                    <b>Content:</b> {{ foo.content }} <br/>
-                    <b>Marks:  </b> {{ foo.marks }} <br/>
-                    <b>Time:   </b> {{ foo.duration }} <br/>
+                    <b>Content:  </b> {{ foo.content }} <br/>
+                    <b>Marks:    </b> {{ foo.marks }} <br/>
+                    <b>Posted at:</b> {{ foo.created_at }} <br/>
+                    <b>Time:     </b> {{ foo.duration }} <br/>
                     
                     {% if request.user.role == 'Student' %}
                     <p class="text-center"><a href="{% url 'main:submit_assignment' id=foo.id %}?next={{ request.path|urlencode }}">Submit Assignment</a>.</p>

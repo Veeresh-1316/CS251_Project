@@ -303,6 +303,15 @@ class AssignmentSubmissionForm(forms.ModelForm):
             asg.save()
         return asg
 
+class edit_profile_form(forms.Form):
+    username = forms.CharField(max_length=50, required=False)
+    email = forms.EmailField(required=False)
+    def is_valid(self):
+        valid = super(edit_profile_form, self).is_valid()
+        if self.cleaned_data.get('username') or self.cleaned_data.get('email'):
+            return True
+        return False
+
 class course_register_form(forms.Form):
     course_id = forms.CharField(max_length=6)
 
