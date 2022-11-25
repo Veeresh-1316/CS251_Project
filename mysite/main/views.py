@@ -26,6 +26,14 @@ from django.contrib.auth.decorators import login_required
 User = get_user_model()
 
 def homepage(request):
+    """Request for homepage
+
+    Args:
+        request (): Request
+
+    Returns:
+        view: Render of the view
+    """
     course = Course.objects.all().values()
     return render(request=request, template_name='main/home.html', context = {'course': course})
 
