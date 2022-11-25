@@ -20,7 +20,7 @@
 
                           <br/>
                           {% if request.user.role == 'Teacher' %}
-                    <p class="text-center"><a href="{% url 'main:create_assignment' pk=course.pk %}?next={{ request.path|urlencode }}">Create Assignment</a>.</p>
+                    <p class="text-center"><a href="{% url 'main:create_assignment' id=course.course_id %}?next={{ request.path|urlencode }}">Create Assignment</a>.</p>
                     {% endif %}
 
                     {% for foo in assignment %}
@@ -32,7 +32,7 @@
                     <b>Time:   </b> {{ foo.duration }} <br/>
                     
                     {% if request.user.role == 'Student' %}
-                    <p class="text-center"><a href="{% url 'main:submit_assignment' pk=foo.pk %}?next={{ request.path|urlencode }}">Submit Assignment</a>.</p>
+                    <p class="text-center"><a href="{% url 'main:submit_assignment' id=foo.id %}?next={{ request.path|urlencode }}">Submit Assignment</a>.</p>
                     {% endif %}
                     <p class="text-center"><a href="{% url 'main:view_submissions' name=foo.course_name title=foo.title %}">View Submissions</a>.</p>
                     <br/>

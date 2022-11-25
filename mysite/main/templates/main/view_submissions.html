@@ -32,7 +32,7 @@
                                 <th scope="row">{{ foo.user.username }}</td>
                                 <td>{{ foo.comment }}</td>
                                 <td><a href="{{foo.file.url}}" download>Download</a></td>
-                                <td> {{ foo.marks }}<br/><a href="{% url 'main:manual_grade' foo.pk %}?next={{ request.path|urlencode }}">Grade</a></td>
+                                <td> {{ foo.marks }}<br/><a href="{% url 'main:manual_grade' foo.id %}?next={{ request.path|urlencode }}">Grade</a></td>
                                 <td> {{ foo.feedback }}</td>
                             </tr>
                             {% endfor %}

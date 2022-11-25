@@ -219,7 +219,7 @@ def course_join(request):
     return render(request=request, template_name="main/course_join.html", context={"form":form})
 
 
-def manual_grade(request, pk):
+def manual_grade(request, id):
     form = manual_grade_form()
     if not request.user.is_authenticated:
         return reverse_lazy('main:login')
@@ -228,7 +228,7 @@ def manual_grade(request, pk):
     if request.method=='POST':
         form = manual_grade_form(request.POST)
         if form.is_valid():
-            submisison = get_object_or_404(AssignmentSubmission, pk=pk)
+            submisison = get_object_or_404(AssignmentSubmission, id=id)
             submisison.marks = form.cleaned_data['marks']
             submisison.feedback = form.cleaned_data['feedback']
             submisison.save(update_fields=['marks', 'feedback'])
@@ -267,8 +267,8 @@ def manual_grade_all(request, name, title):
     return render(request=request, template_name="main/manual_grade_all.html", context={"form":form})
 
 
-def course_single(request, pk):
-    course = get_object_or_404(Course, course_id=pk)
+def course_single(request, id):
+    course = get_object_or_404(Course, course_id=id)
     assignment=Assignment.objects.all().values()
     if not request.user.is_authenticated:
         return reverse_lazy('main:login')
@@ -293,7 +293,7 @@ class AssignmentCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        course = Course.objects.get(pk=self.kwargs['pk'])
+        course = Course.objects.get(course_id=self.kwargs['id'])
         form.instance.course_name=course.course_name
         return super(AssignmentCreateView, self).form_valid(form)
 
@@ -325,7 +325,7 @@ class AssignmentSubmissionView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        assignment = Assignment.objects.get(pk=self.kwargs['pk'])
+        assignment = Assignment.objects.get(id=self.kwargs['id'])
         form.instance.assignment_title = assignment.title
         form.instance.course_name = assignment.course_name
         prev = AssignmentSubmission.objects.filter(user=self.request.user, assignment_title=assignment.title, course_name=assignment.course_name)

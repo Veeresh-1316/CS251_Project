@@ -257,6 +257,7 @@ class AssignmentSubmissionForm(forms.ModelForm):
 
     def save(self, commit=True):
         asg = super(AssignmentSubmissionForm, self).save(commit=False)
+        print(asg.file.name)
         if commit:
             asg.save()
         return asg
