@@ -405,7 +405,17 @@ class AssignmentSubmissionView(CreateView):
             with ZipFile(form.instance.file, 'r') as zObject:
                 zObject.extractall()
             os.system("tree '{0}' > temp.txt".format(split_tup[0]))
-            corr=filecmp.cmp(assignment.tree.url, 'temp.txt')
+
+            a_file = open("temp.txt", "r")
+            lines = a_file.readlines()
+            a_file.close()
+            lines[0]='.\n'
+            new_file = open("temp.txt", "w+")
+            for line in lines:
+                new_file.write(line)
+            new_file. close()
+            f='media/'+assignment.tree.name
+            corr=filecmp.cmp(f, 'temp.txt')
             os.system("rm temp.txt")
             os.system("rm -r '{0}'".format(split_tup[0]))
 
@@ -415,7 +425,16 @@ class AssignmentSubmissionView(CreateView):
             os.system("tar -xvzf media/'{0}'".format(form.instance.file.name))
             os.system("rm -r media/'{0}'".format(form.instance.file.name))
             os.system("tree '{0}' > temp.txt".format(split_tup[0]))
-            corr=filecmp.cmp(assignment.tree.url, 'temp.txt')
+            a_file = open("temp.txt", "r")
+            lines = a_file.readlines()
+            a_file.close()
+            lines[0]='.\n'
+            new_file = open("temp.txt", "w+")
+            for line in lines:
+                new_file.write(line)
+            new_file. close()
+            f='media/'+assignment.tree.name
+            corr=filecmp.cmp(f, 'temp.txt')
             os.system("rm temp.txt")
             os.system("rm -r '{0}'".format(split_tup[0]))
 
@@ -447,6 +466,7 @@ class AssignmentSubmissionListView(ListView):
     @method_decorator(login_required(login_url=reverse_lazy('main:login')))
     # @method_decorator(user_is_instructor, user_is_student)
     def dispatch(self, request, *args, **kwargs):
+        f=''
         for x in self.model.objects.all():
             f = x.file.url
             break

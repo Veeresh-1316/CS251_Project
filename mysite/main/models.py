@@ -76,8 +76,7 @@ class Assignment(models.Model):
     duration = models.CharField(max_length=100)
     created_at = models.DateTimeField(default=now, null=True, blank=True)
     file_types = models.CharField(null=False, blank=False, default=".zip", max_length=100)
-    autograder = models.FileField(null=True, blank=True, upload_to=autograder_path)
-
+    tree= models.FileField(null=True, blank=True, upload_to=autograder_path)
     def __str__(self):
         return self.course_name + ":" + self.title
 

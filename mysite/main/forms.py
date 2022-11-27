@@ -181,7 +181,7 @@ class CourseCreateForm(forms.ModelForm):
 class AssignmentCreateForm(forms.ModelForm):
     class Meta:
         model = Assignment
-        fields = ['title', 'content', 'marks', 'duration', 'file_types', 'autograder']
+        fields = ['title', 'content', 'marks', 'duration', 'file_types', 'tree']
 
     def __init__(self, *args, **kwargs):
         """Constructor
@@ -192,7 +192,7 @@ class AssignmentCreateForm(forms.ModelForm):
         self.fields['marks'].label = "Marks"
         self.fields['duration'].label = "Duration"
         self.fields['file_types'].label = "File Types for submisison"
-        self.fields['autograder'].label = "Autograder"
+        self.fields['tree'].label = "Directory Tree"
 
         self.fields['title'].widget.attrs.update(
             {
@@ -219,9 +219,9 @@ class AssignmentCreateForm(forms.ModelForm):
                 'placeholder': '.zip, .tar, .tgz, .pdf ....',
             }
         )
-        self.fields['autograder'].widget.attrs.update(
+        self.fields['tree'].widget.attrs.update(
             {
-                'placeholder': 'Upload Autograder folder\n.sh script file\nand corresponding input output files',
+                'placeholder': 'Upload Directory Tree as txt file',
             }
         )
 
